@@ -82,7 +82,7 @@ fn main() {
 
     message.call();
 
-    let some_number = Some(4);
+    let quit = Message::Quit;
 
-    
+    quit.call();
 }
