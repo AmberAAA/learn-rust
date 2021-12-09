@@ -6,7 +6,6 @@ enum IpAddKind {
     V6,
 }
 
-
 /**
  * 2. 定义一个有值的枚举
  */
@@ -15,12 +14,12 @@ struct IpAddr {
     address: String,
 }
 
-fn route( ip_type: IpAddKind ) {}
+fn route(ip_type: IpAddKind) {}
 
 #[derive(Debug)]
 enum IpAddKindWithValue {
     V4(u8, u8, u8, u8),
-    V6(String)
+    V6(String),
 }
 
 struct IpV4Struct {}
@@ -40,9 +39,9 @@ enum IpStruct {
 #[derive(Debug)]
 enum Message {
     Quit,
-    Move { x: i32, y: i32},
+    Move { x: i32, y: i32 },
     Write(String),
-    ChangeColor(i32, i32, i32)
+    ChangeColor(i32, i32, i32),
 }
 
 /**
@@ -54,20 +53,77 @@ impl Message {
     }
 }
 
-enum Option<T> {
-    Some(T),
-    None
+// match 流控制
+// 最早，通行者三种货币，金、银、同
+enum Coin {
+    Gold,
+    Silver,
+    Copper,
 }
+
+fn value_if_coin(coin: Coin) -> u8 {
+    match coin {
+        Coin::Gold => {
+            println!("Gold Coin!");
+            100
+        }
+        Coin::Silver => 10,
+        Coin::Copper => 1,
+    }
+}
+
+// 后来三国，魏吴蜀三个分别铸造了不同的铜币，因此不同的铜币也有了不同的价值
+#[derive(Debug)]
+enum Country {
+    WEI,
+    WU,
+    SHU
+}
+
+#[derive(Debug)]
+enum CoinV2 {
+    Gold,
+    Silver,
+    Copper(Country)
+}
+
+fn value_if_coin_v2 (coin: CoinV2) -> u8 {
+    match coin {
+        CoinV2::Gold => {
+            println!("Gold Coin!");
+            100
+        }
+        CoinV2::Silver => 10,
+        CoinV2::Copper(country) => {
+            println!("Owww, {:?}'s Copper Coin", country);
+            match country {
+                Country::SHU => 1,
+                Country::WEI => 2,
+                Country::WU => 3,
+            }
+        }
+    } 
+}
+
+// OPTION
+
+fn plus_one (num: Option<i32>) -> Option<i32> {
+    match num {
+        None => None,
+        Some(value) => Some(value+1 )
+    }
+}
+
 
 fn main() {
     println!("Hello, world!1");
 
     let home = IpAddr {
         kind: IpAddKind::V4,
-        address: String::from("127.0.0.1")
+        address: String::from("127.0.0.1"),
     };
 
-    let v4  = IpAddKindWithValue::V4(1,1,1,1);
+    let v4 = IpAddKindWithValue::V4(1, 1, 1, 1);
     let v6 = IpAddKindWithValue::V6(String::from("::1"));
 
     let v6Struct = IpStruct::V4(IpV4Struct {});
@@ -85,4 +141,11 @@ fn main() {
     let quit = Message::Quit;
 
     quit.call();
+
+    println!("V1: the gold coin value is {}.", value_if_coin(Coin::Gold));
+
+    println!("V2: the gold coin value is {}.", value_if_coin_v2(CoinV2::Gold));
+    println!("V2: the WEI copper coin value is {}.", value_if_coin_v2(CoinV2::Copper(Country::WEI)));
+
+    println!("32 plus one is {:?}", plus_one(Some(32)))
 }
